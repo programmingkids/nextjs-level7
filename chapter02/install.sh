@@ -2,8 +2,8 @@
 
 echo "==== START ===="
 
-mysql -u root -e "DROP DATABASE IF EXISTS nextjs_level7_chapter02"
-mysql -u root -e "CREATE DATABASE nextjs_level7_chapter02 DEFAULT character SET utf8"
+psql -U postgres -c "DROP DATABASE IF EXISTS nextjs_level7_chapter02"
+psql -U postgres -c "CREATE DATABASE nextjs_level7_chapter02 WITH ENCODING='UTF8' LC_COLLATE='ja_JP.utf8' LC_CTYPE='ja_JP.utf8' TEMPLATE=template0"
 
 echo "==== nextjs_level7_chapter02 ===="
 echo "==== DATABASE CREATED ===="
