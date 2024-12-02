@@ -20,9 +20,8 @@ sudo systemctl enable postgresql
 
 echo "==== POSTGRESQL PG_HBA CHANGED ===="
 sudo cp /var/lib/pgsql/data/pg_hba.conf /var/lib/pgsql/data/pg_hba.conf.org
-
-
-sudo cat << EOM >> /var/lib/pgsql/data/pg_hba.conf
+sudo cat << 'EOM' | sudo tee /var/lib/pgsql/data/pg_hba.conf
+# PostgreSQL Client Authentication Configuration File
 local   all             all                                     trust
 host    all             all             127.0.0.1/32            trust
 host    all             all             ::1/128                 ident
