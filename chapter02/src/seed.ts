@@ -1,5 +1,5 @@
-import { PrismaClient } from "@prisma/client";
-import data from "./seedData";
+import { PrismaClient } from '@prisma/client';
+import data from './seedData';
 
 const prisma = new PrismaClient();
 
@@ -9,7 +9,12 @@ async function main() {
       // update or insert
       const result = await prisma.player.upsert({
         where: { id },
-        update: {},
+        update: {
+          name,
+          hp,
+          mp,
+          job,
+        },
         create: {
           id,
           name,
