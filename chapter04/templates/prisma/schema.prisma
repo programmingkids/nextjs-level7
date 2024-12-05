@@ -1,0 +1,38 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures  = ["relationJoins"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Player {
+  id Int @default(autoincrement()) @id
+  name String
+  age Int
+  createdAt DateTime @default(now())
+  modifiedAt DateTime @updatedAt
+  weapons PlayerWeapon[]
+}
+
+model Weapon {
+  id Int @default(autoincrement()) @id
+  name String
+  players PlayerWeapon[]
+}
+
+model PlayerWeapon {
+  id Int @default(autoincrement()) @id
+  player Player @relation(fields: [playerId], references: [id])
+  playerId Int
+  weapon Weapon @relation(fields: [weaponId], references: [id])
+  weaponId Int
+}
