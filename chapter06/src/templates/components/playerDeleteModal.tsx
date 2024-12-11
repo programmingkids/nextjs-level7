@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { HiOutlineXMark } from 'react-icons/hi2';
-import { deletePlayer } from '@/actions/player';
+import { deletePlayerAction } from '@/actions/player';
 
 type Props = {
   id: number;
@@ -49,7 +49,7 @@ export const PlayerDeleteModal = ({
 
   // onSubmitイベントのハンドラー
   const onSubmit: SubmitHandler<{ id: number }> = async () => {
-    await deletePlayer(id);
+    await deletePlayerAction(id);
     onClose();
   };
 

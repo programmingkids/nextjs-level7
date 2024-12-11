@@ -1,21 +1,22 @@
 import { notFound } from 'next/navigation';
-import { getPlayerById } from '@/lib/api';
+import { getPlayerById } from '@/db/player';
 import { PlayerEditForm } from '@/components/playerEdtForm';
 
 type Props = {
   params: {
-    id: number;
+    id: string;
   };
 };
 
 export default async function Page({ params: { id } }: Props) {
+  // 型変換
+  const playerId = parseInt(id as string, 10);
   // 編集対象のデータを取得
-  const result = await getPlayerById(id);
+  const result = await getPlayerById(playerId);
   if (!result.success) {
     // 存在しない場合、NotFoundにする
     notFound();
   }
-
   return (
     <div className="main">
       <h1 className="p-4 bg-blue-200 text-xl">Player Edit</h1>

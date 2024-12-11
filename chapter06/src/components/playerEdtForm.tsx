@@ -4,17 +4,18 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { editPlayer } from '@/actions/player';
-import { PlayerType, playerSchema } from '@/lib/schemas';
+import { editPlayerAction } from '@/actions/player';
 import { PlayerModal } from '@/components/playerModal';
+import { ErrorModal } from '@/components/errorModal';
+import { type Player, PlayerSchema } from '@/prisma-zod/index';
 
 type Props = {
-  defaultValues: PlayerType;
+  defaultValues: Player;
 };
 
 export const PlayerEditForm = ({ defaultValues }: Props) => {
   const [open, setOpen] = useState(false);
-  const [data, setData] = useState();
+  const [data, setData] = useState<Player>();
   const router = useRouter();
 
   // Formの入力パーツの初期化
@@ -24,23 +25,21 @@ export const PlayerEditForm = ({ defaultValues }: Props) => {
     formState: { errors, isSubmitting },
     setError,
     clearErrors,
-  } = useForm<PlayerType>({
-    resolver: zodResolver(playerSchema),
+  } = useForm<Player>({
+    resolver: zodResolver(PlayerSchema),
     defaultValues,
   });
 
   // onSubmitイベントのハンドラー
-  const onSubmit: SubmitHandler<PlayerType> = async (data: PlayerType) => {
+  const onSubmit: SubmitHandler<Player> = async (data: Player) => {
     // 送信時にエラー表示を解除
     clearErrors();
     // サーバアクションを起動
-    const result = await editPlayer(data);
+    const result = await editPlayerAction(data);
+    // サーバー側でエラー
     if (!result.success) {
-      // サーバー側バリデーション失敗なら、エラーを表示する
-      Object.entries(result.error).map(([key, value]) => {
-        if (value !== undefined) {
-          setError(`root.${key}`, { message: value[0] });
-        }
+      Object.entries(result.error!).map(([k, v]) => {
+        setError(`root.${k}`, { message: v[0] });
       });
       return;
     }
@@ -128,6 +127,14 @@ export const PlayerEditForm = ({ defaultValues }: Props) => {
         title="更新完了"
         successText="一覧へ移動"
       />
+      {errors.root?.server_error?.message && (
+        <ErrorModal
+          onSuccess={onSuccess}
+          message={errors.root?.server_error?.message}
+          title="エラー"
+          successText="一覧へ移動"
+        />
+      )}
     </>
   );
 };

@@ -2,13 +2,13 @@
 
 import { useEffect, useRef } from 'react';
 import { HiOutlineXMark } from 'react-icons/hi2';
-import { PlayerType } from '@/lib/schemas';
+import { type PlayerOptionalDefaults } from '@/prisma-zod/index';
 
 type Props = {
   open: boolean;
   onClose: () => void;
   onSuccess: () => void;
-  data: PlayerType | undefined;
+  data: PlayerOptionalDefaults | undefined;
   successText: string;
   title: string;
 };

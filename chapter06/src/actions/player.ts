@@ -2,14 +2,18 @@
 
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import * as z from 'zod';
-import { PlayerType, playerSchema } from '@/lib/schemas';
-import { postPlayer, putPlayer, deletePlayerById } from '@/lib/api';
+import { createPlayer, updatePlayer, deletePlayerById } from '@/db/player';
+import {
+  type PlayerOptionalDefaults,
+  type Player,
+  PlayerOptionalDefaultsSchema,
+  PlayerSchema,
+} from '@/prisma-zod/index';
 
 // 新規登録処理を行うサーバーアクション関数
-export async function createPlayer(data: PlayerType) {
+export async function createPlayerAction(data: PlayerOptionalDefaults) {
   // Zodによるバリデーションを実行する
-  const result = playerSchema.safeParse(data);
+  const result = PlayerOptionalDefaultsSchema.safeParse(data);
 
   // バリデーション失敗の場合、errorを返す
   if (!result.success) {
@@ -19,41 +23,18 @@ export async function createPlayer(data: PlayerType) {
     };
   }
 
-  // バリデーション成功の場合、APIに通信処理
-  const res = await postPlayer(result.data);
-
-  // 登録失敗の場合、errorを返す
-  if (!res.success) {
-    // エラーデータを整理する
-    const customError = new z.ZodError([]);
-    Object.entries(res.error).map(([key, value]) => {
-      const message = (value as [string])[0];
-      customError.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: [key],
-        message,
-      });
-    });
-    // エラーデータを返す
-    return {
-      success: res.success,
-      error: customError.flatten().fieldErrors,
-    };
-  }
-
-  // 登録成功の場合、一覧画面のキャッシュ削除
+  // バリデーション成功の場合、DB処理
+  const res = await createPlayer(data);
+  // 一覧画面のキャッシュ削除
   revalidatePath('/player');
   // 結果を返す
-  return {
-    success: res.success,
-    data: res.data,
-  };
+  return res;
 }
 
 // 更新処理を行うサーバーアクション関数
-export async function editPlayer(data: PlayerType) {
+export async function editPlayerAction(data: Player) {
   // Zodによるバリデーションを実行する
-  const result = playerSchema.safeParse(data);
+  const result = PlayerSchema.safeParse(data);
 
   // バリデーション失敗の場合、errorを返す
   if (!result.success) {
@@ -63,38 +44,16 @@ export async function editPlayer(data: PlayerType) {
     };
   }
 
-  // バリデーション成功の場合、APIに通信処理
-  const res = await putPlayer(result.data);
+  // バリデーション成功の場合、DB処理
+  const res = await updatePlayer(data);
 
-  // 更新失敗の場合、errorを返す
-  if (!res.success) {
-    // エラーデータを整理する
-    const customError = new z.ZodError([]);
-    Object.entries(res.error).map(([key, value]) => {
-      const message = (value as [string])[0];
-      customError.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: [key],
-        message,
-      });
-    });
-    // エラーデータを返す
-    return {
-      success: res.success,
-      error: customError.flatten().fieldErrors,
-    };
-  }
-
-  // 更新成功の場合、一覧画面のキャッシュ削除
+  // 一覧画面のキャッシュ削除
   revalidatePath('/player');
   // 結果を返す
-  return {
-    success: res.success,
-    data: res.data,
-  };
+  return res;
 }
 
-export async function deletePlayer(id: number) {
+export async function deletePlayerAction(id: number) {
   // APIに通信処理
   await deletePlayerById(id);
   // 一覧画面のキャッシュ削除

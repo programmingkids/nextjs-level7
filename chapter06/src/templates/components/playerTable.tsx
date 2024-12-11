@@ -1,12 +1,10 @@
 import Link from 'next/link';
 import { HiPencil } from 'react-icons/hi2';
+import { type Player } from '@/prisma-zod/index';
 import { PlayerDelete } from '@/components/playerDelete';
 
-// zodで定義したスキーマの型
-import { type PlayerType } from '@/lib/schemas';
-
 type Props = {
-  list: PlayerType[];
+  list: Player[];
 };
 
 // プレイヤー一覧のテーブル
@@ -16,7 +14,7 @@ export const PlayerTable = ({ list }: Props) => {
       <table className="w-full text-left">
         <TableHead />
         <tbody>
-          {list.map((e: PlayerType) => (
+          {list.map((e: Player) => (
             <TableRow key={e.id} {...e} />
           ))}
         </tbody>
@@ -42,7 +40,7 @@ const TableHead = () => {
 };
 
 // テーブルの1行部分
-const TableRow = ({ id, name, hp, mp, job }: PlayerType) => {
+const TableRow = ({ id, name, hp, mp, job }: Player) => {
   return (
     <tr className="odd:bg-white even:bg-blue-50 border-b">
       <td className="p-3">{id}</td>
@@ -57,7 +55,7 @@ const TableRow = ({ id, name, hp, mp, job }: PlayerType) => {
         >
           <HiPencil />
         </Link>
-        {id && <PlayerDelete id={id} name={name} />}
+        <PlayerDelete id={id} name={name} />
       </td>
     </tr>
   );

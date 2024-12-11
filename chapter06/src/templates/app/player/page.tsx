@@ -1,5 +1,5 @@
 import { PlayerTable } from '@/components/playerTable';
-import { getPlayers } from '@/lib/api';
+import { getPlayers } from '@/db/player';
 
 export default async function Page() {
   // 一覧データを取得

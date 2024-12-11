@@ -1,43 +1,43 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { HiOutlineXMark } from 'react-icons/hi2';
-import { type PlayerOptionalDefaults } from '@/prisma-zod/index';
 
 type Props = {
-  open: boolean;
-  onClose: () => void;
   onSuccess: () => void;
-  data: PlayerOptionalDefaults | undefined;
+  message: string | undefined;
   successText: string;
   title: string;
 };
 
-export const PlayerModal = ({
-  open,
-  onClose,
+export const ErrorModal = ({
   onSuccess,
-  data,
+  message,
   successText,
   title,
 }: Props) => {
+  const [open, setOpen] = useState(true);
   // Refオブジェクト作成
   const modalRef = useRef<HTMLDivElement>(null);
   // キーダウンイベントハンドラー
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     // ESCでモーダルを閉じる
     if (event.key === 'Escape') {
-      onClose();
+      setOpen(false);
     }
   };
-
   // モーダルにフォーカスを設定する
   useEffect(() => {
     // モダールのRefにフォーカスする
     modalRef.current?.focus();
   }, [open]);
+  
+  // モーダルを閉じる
+  const onClose = () => {
+    setOpen(false);
+  }
 
-  return open && data !== undefined ? (
+  return open ? (
     <div
       id="static-modal"
       data-modal-backdrop="static"
@@ -57,11 +57,11 @@ export const PlayerModal = ({
         className="relative p-4 w-full max-w-2xl max-h-full top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
       >
         <div className="bg-white rounded-lg">
-          <div className="flex justify-center relative p-4 md:p-5 rounded-t-lg border-b bg-gray-100">
+          <div className="flex justify-center relative p-4 md:p-5 rounded-t-lg border-b bg-red-500 text-white">
             <h3 className="text-xl font-semibold">{title}</h3>
             <button
               type="button"
-              className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center absolute right-5"
+              className="text-white bg-transparent hover:bg-red-800 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center absolute right-5"
               data-modal-hide="static-modal"
               onClick={onClose}
             >
@@ -71,29 +71,14 @@ export const PlayerModal = ({
           </div>
           <div className="p-5">
             <div className="text-center">
-              <div className="pb-4 font-bold">{data.name}</div>
-              <div className="pb-8">ID: {data?.id}</div>
-              <div className="grid grid-cols-3 divide-x">
-                <div>
-                  <div className="font-semibold">HP</div>
-                  <div>{data.hp}</div>
-                </div>
-                <div>
-                  <div className="font-semibold">MP</div>
-                  <div>{data.mp}</div>
-                </div>
-                <div>
-                  <div className="font-semibold">JOB</div>
-                  <div>{data.job}</div>
-                </div>
-              </div>
+              <div className="pb-4 font-bold">{message}</div>
             </div>
           </div>
           <div className="flex items-center p-4 md:p-5 border-t rounded-b-lg">
             <button
               data-modal-hide="static-modal"
               type="button"
-              className="w-full text-white bg-blue-500 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+              className="w-full text-white bg-red-500 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
               onClick={onSuccess}
             >
               {successText}

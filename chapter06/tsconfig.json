@@ -19,7 +19,7 @@
     ],
     "paths": {
       "@/*": ["./src/*"],
-      "@/prisma-types/*": ["./prisma/generated/zod/*"]
+      "@/prisma-zod/*": ["./prisma/generated/zod/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
