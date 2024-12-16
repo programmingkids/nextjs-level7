@@ -9,7 +9,7 @@ async function main() {
     by: ['job'],
     _count: {
       _all: true,
-    }
+    },
   });
   console.log(result);
 }

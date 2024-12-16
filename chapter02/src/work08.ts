@@ -7,7 +7,7 @@ async function main() {
   // SELECT * FROM Player WHERE hp <= 20 AND mp >= 40
   const result = await prisma.player.findMany({
     where: {
-      OR: [
+      AND: [
         {
           hp: {
             lte: 20,

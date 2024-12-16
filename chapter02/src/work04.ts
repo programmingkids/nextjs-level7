@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 
 async function main() {
   // 文字列で検索
-  // SELECT * FROM Player WHERE hp = job = '勇者'
+  // SELECT * FROM Player WHERE job = '勇者'
   const result = await prisma.player.findMany({
     where: {
       job: '勇者',

@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 
 async function main() {
   // あいまい検索
-  // SELECT * FROM Player WHERE name LIKE '%nn%'
+  // SELECT * FROM Player WHERE name LIKE '%y%'
   const result = await prisma.player.findMany({
     where: {
       name: {
