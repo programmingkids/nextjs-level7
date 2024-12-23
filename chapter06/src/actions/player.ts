@@ -54,7 +54,7 @@ export async function editPlayerAction(data: Player) {
 }
 
 export async function deletePlayerAction(id: number) {
-  // APIに通信処理
+  // データベース処理
   await deletePlayerById(id);
   // 一覧画面のキャッシュ削除
   revalidatePath('/player');
